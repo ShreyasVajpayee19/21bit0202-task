@@ -19,20 +19,10 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
@@ -48,11 +38,10 @@ export default function Register() {
         throw new Error("Registration failed");
       }
 
-      toast({
-        title: "Success",
-        description: "Account created successfully",
-      });
-      router.push("/auth/login");
+      const data = await response.json();
+      localStorage.setItem("token", data.token); // Store token immediately
+      toast({ title: "Success", description: "Account created successfully" });
+      router.push("/dashboard"); // Redirect directly to dashboard
     } catch (error) {
       toast({
         title: "Error",
@@ -140,21 +129,6 @@ export default function Register() {
                   className="h-12 px-4 rounded-xl border-gray-200 focus:border-violet-500 focus:ring-violet-500"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2.5">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
-                  Confirm Password
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  required
-                  className="h-12 px-4 rounded-xl border-gray-200 focus:border-violet-500 focus:ring-violet-500"
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 />
               </div>
             </div>
